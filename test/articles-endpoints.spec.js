@@ -112,7 +112,7 @@ describe('Articles Endpoints', function() {
                     expect(res.body.title).to.eql(expectedArticle.title)
                     expect(res.body.content).to.eql(expectedArticle.content)
                   })
-              })
+            })
         })
     })
 
