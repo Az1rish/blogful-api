@@ -53,13 +53,19 @@ describe('Articles Endpoints', function() {
         })
 
         context(`Given an XSS attack article`, () => {
+            const testUsers = makeUsersArray();
             const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
       
             beforeEach('insert malicious article', () => {
-              return db
-                .into('blogful_articles')
-                .insert([ maliciousArticle ])
-            })
+                return db
+                    .into('blogful_users')
+                    .insert(testUsers)
+                    .then(() => {
+                        return db
+                            .into('blogful_articles')
+                            .insert([ maliciousArticle ])
+                  })
+              })
       
             it('removes XSS attack content', () => {
               return supertest(app)
@@ -109,12 +115,18 @@ describe('Articles Endpoints', function() {
         })
 
         context('Given an XSS attack article', () => {
+            const testUsers = makeUsersArray();
             const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
 
             beforeEach('insert malicious article', () => {
                 return db
-                    .into('blogful_articles')
-                    .insert([ maliciousArticle ])
+                    .into('blogful_users')
+                    .insert(testUsers)
+                    .then(() => {
+                        return db
+                            .into('blogful_articles')
+                            .insert([ maliciousArticle ])
+                    })
             })
 
             it('removes XSS attack content', () => {
@@ -130,6 +142,13 @@ describe('Articles Endpoints', function() {
     })
 
     describe('POST /api/articles', () => {
+        const testUsers = makeUsersArray();
+        beforeEach('insert malicious article', () => {
+            return db
+                .into('blogful_users')
+                .insert(testUsers)
+        })
+
         it('creates an article, responding with 201 and the new article', function() {
             this.retries(3)
             const newArticle = {
@@ -233,7 +252,7 @@ describe('Articles Endpoints', function() {
         })
     })
 
-    describe.only('PATCH /api/articles/:article_id', () => {
+    describe('PATCH /api/articles/:article_id', () => {
         context(`Given no articles`, () => {
             it(`responds with 404`, () => {
                 const articleId = 123456
